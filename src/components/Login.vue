@@ -41,13 +41,16 @@ export default {
       this.$refs[formName].resetFields()
     },
     async login () {
-      const { meta } = await this.$axios.post('login', {
+      const { meta, data } = await this.$axios.post('login', {
         username: this.ruleForm.username,
         password: this.ruleForm.password
       })
+      localStorage.setItem('token', data.token)
       if (meta.status === 200) {
         this.$router.push('/index')
         this.$message.success(meta.msg)
+      } else {
+        this.$message.error(meta.msg)
       }
     }
   }
