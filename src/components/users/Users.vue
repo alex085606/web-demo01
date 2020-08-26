@@ -34,7 +34,7 @@
         <template v-slot:default='{ row }'>
           <el-button plain type='primary' size='mini' icon='el-icon-edit' @click='showEditUserDialog(row)'></el-button>
           <el-button plain type='danger' size='mini' icon='el-icon-delete' @click = 'delUser(row.id)'></el-button>
-          <el-button plain type='success' size='mini' icon='el-icon-check'>分配角色</el-button>
+          <el-button plain type='success' size='mini' icon='el-icon-check' @click='showAssignRoleDialog(row)'>分配角色</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,7 +94,33 @@
         <el-button @click="editUserDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click = 'editUser'>确 定</el-button>
       </span>
+    </el-dialog>,
+    <!-- 分配角色 dialog -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="assignRoleDialogVisible"
+      width="40%">
+      <el-form :model="assignRoleForm" status-icon ref="assignRoleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="用户名">
+          <el-tag type='info'>{{ assignRoleForm.username }}</el-tag>
+        </el-form-item>
+        <el-form-item label="角色列表">
+          <el-select v-model="assignRoleForm.roleId" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="assignRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click = 'assignRole'>确 定</el-button>
+      </span>
     </el-dialog>
+
   </div>
 </template>
 
@@ -144,7 +170,14 @@ export default {
       pagenum: 1,
       pagesize: 2,
       total: 0,
-      userList: []
+      userList: [],
+      assignRoleDialogVisible: false,
+      assignRoleForm: {
+        id: '',
+        roleId: '',
+        username: ''
+      },
+      options: []
     }
   },
   created () {
@@ -252,6 +285,37 @@ export default {
         }
       } catch (e) {
         console.log(e)
+      }
+    },
+    async showAssignRoleDialog (row) {
+      this.assignRoleDialogVisible = true
+      this.assignRoleForm.id = row.id
+      this.assignRoleForm.username = row.username
+      // const res = await this.$axios.get(`roles/${this.assignRoleForm.id}`)
+      // console.log(res)
+      // console.log(row)
+      const { data, meta } = await this.$axios.get('roles')
+      if (meta.status === 200) {
+        this.options = data
+      } else {
+        this.$message.error(meta.msg)
+      }
+      const res = await this.$axios.get(`users/${row.id}`)
+      if (res.meta.status === 200) {
+        this.assignRoleForm.roleId = res.data.rid === -1 ? '' : res.data.rid
+      } else {
+        this.$message.error(meta.msg)
+      }
+    },
+    async assignRole () {
+      const { meta } = await this.$axios.put(`users/${this.assignRoleForm.id}/role`, {
+        rid: this.assignRoleForm.roleId
+      })
+      if (meta.status === 200) {
+        this.assignRoleDialogVisible = false
+        this.$message.success(meta.msg)
+      } else {
+        this.$message.error(meta.msg)
       }
     }
   }
