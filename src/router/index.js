@@ -5,6 +5,7 @@ import Index from '../components/Index.vue'
 import Users from '../components/users/Users.vue'
 import Rights from '../components/rights/Rights.vue'
 import Roles from '../components/rights/Roles.vue'
+import Categories from '../components/products/Categories.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -16,7 +17,8 @@ const routes = [
     children: [
       { path: '/users', component: Users },
       { path: '/rights', component: Rights },
-      { path: '/roles', component: Roles }
+      { path: '/roles', component: Roles },
+      { path: '/categories', component: Categories }
     ]
   }
 ]
