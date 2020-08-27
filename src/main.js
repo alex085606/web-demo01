@@ -5,6 +5,13 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
+import moment from 'moment'
+
+import VueQuillEditor from 'vue-quill-editor'
+
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css'
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
@@ -28,6 +35,12 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
   // 对响应错误做点什么
   return Promise.reject(error)
+}) // for bubble theme
+
+Vue.use(VueQuillEditor /* { default global options } */)
+
+Vue.filter('time', function (value) {
+  return moment(value * 1000).format('YYYY-MM-DD HH:mm:ss')
 })
 new Vue({
   router,
