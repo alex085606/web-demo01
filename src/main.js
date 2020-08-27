@@ -12,6 +12,8 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css' // import styles
 import 'quill/dist/quill.snow.css' // for snow theme
 import 'quill/dist/quill.bubble.css'
+import Hello from './components/hello/hello.js'
+Vue.use(Hello)
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false

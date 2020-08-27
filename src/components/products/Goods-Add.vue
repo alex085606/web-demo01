@@ -35,13 +35,13 @@
       <el-tab-pane label="商品图片" name="1">
         <el-upload
           action="http://localhost:8888/api/private/v1/upload"
-          list-type="picture-card"
           name="file"
           :headers="headers"
           :on-success="handleSuccess"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
           multiple
+          list-type="picture-card"
         >
           <i class="el-icon-plus"></i>
         </el-upload>
@@ -103,7 +103,6 @@ export default {
       const { data, meta } = await this.$axios.get('categories', { params: { type: 3 } })
       if (meta.status === 200) {
         this.options = data
-        console.log(this.options)
       } else {
         this.$message.error(meta.msg)
       }
